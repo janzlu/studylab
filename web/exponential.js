@@ -40,6 +40,7 @@
     var playing = false;
     var raf = 0;
     var stamp = null;
+    var origin = 0;
     var lastFocus = "";
     var cssW = 0;
     var cssH = 0;
@@ -231,9 +232,13 @@
 
     function frame(now) {
       if (!playing) return;
-      if (stamp == null) stamp = now;
-      var u = Math.min(1, (now - stamp) / 8000);
-      t = u;
+      if (stamp == null) {
+        stamp = now;
+        origin = t;
+      }
+      var span = Math.max(1e-6, 1 - origin);
+      var u = Math.min(1, (now - stamp) / (8000 * span));
+      t = origin + span * u;
       if (u >= 1) {
         t = 1;
         settled = true;

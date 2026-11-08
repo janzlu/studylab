@@ -33,7 +33,6 @@
   var checkBanner = document.getElementById("check-banner");
   var submitCheck = document.getElementById("submit-check");
   var playBtn = document.getElementById("play");
-  var pauseBtn = document.getElementById("pause");
   var replayBtn = document.getElementById("replay");
   var lessonTitle = document.getElementById("lesson-title");
   var lead = document.getElementById("lead");
@@ -374,7 +373,7 @@
   function setPlaying(on) {
     state.playing = on;
     playBtn.classList.toggle("is-on", on);
-    pauseBtn.classList.toggle("is-on", !on);
+    playBtn.setAttribute("aria-pressed", on ? "true" : "false");
   }
 
   function mountStage(lesson) {
@@ -772,8 +771,11 @@
     nav.classList.toggle("scrolled", window.scrollY > 4);
   }, { passive: true });
 
-  playBtn.addEventListener("click", function () { if (state.stage) state.stage.play(); });
-  pauseBtn.addEventListener("click", function () { if (state.stage) state.stage.pause(); });
+  playBtn.addEventListener("click", function () {
+    if (!state.stage) return;
+    if (state.playing) state.stage.pause();
+    else state.stage.play();
+  });
   replayBtn.addEventListener("click", function () { if (state.stage) state.stage.replay(); });
   canvas.addEventListener("pointerdown", function () { anim.focus(); });
   anim.addEventListener("keydown", function (event) {

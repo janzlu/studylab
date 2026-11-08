@@ -28,6 +28,7 @@
     var playing = false;
     var raf = 0;
     var stamp = null;
+    var origin = 0;
     var lastFocus = "";
     var cssW = 0;
     var cssH = 0;
@@ -183,9 +184,14 @@
 
     function frame(now) {
       if (!playing) return;
-      if (stamp == null) stamp = now;
-      var u = Math.min(1, (now - stamp) / 8000);
-      shown = u * Math.PI * 2;
+      if (stamp == null) {
+        stamp = now;
+        origin = shown;
+      }
+      var end = Math.PI * 2;
+      var span = Math.max(1e-6, end - origin);
+      var u = Math.min(1, (now - stamp) / (8000 * (span / end)));
+      shown = origin + span * u;
       if (u >= 1) {
         settled = true;
         shown = theta;
